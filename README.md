@@ -28,3 +28,5 @@
 0xB4c65AcFcA97Ab82d23fa770a7E66ab3d0a3c766
 
 Спасибо за поддержку ❤️
+
+Опирался на код - https://github.com/Axcent-ape/Blum/tree/main
