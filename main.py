@@ -81,15 +81,15 @@ async def get_tg_clients() -> list[Client]:
     if not session_names:
         raise FileNotFoundError("Not found session files")
 
-    if not data.config.API_ID or not data.config.API_HASH:
-        raise ValueError("API_ID and API_HASH not found in the .env file.")
+    if not data.config.API_IDS or not data.config.API_HASHES:
+        raise ValueError("API_IDS and API_HASHES not found in the config file.")
 
     tg_clients = [Client(
         name=session_name,
-        api_id=data.config.API_ID,
-        api_hash=data.config.API_HASH,
-        workdir='sessions/',
-    ) for session_name in session_names]
+        api_id=api_id,
+        api_hash=api_hash,
+        workdir="sessions/",
+    ) for session_name, api_id, api_hash in zip(session_names, data.config.API_IDS, data.config.API_HASHES)]
 
     return tg_clients
 
