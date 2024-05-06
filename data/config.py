@@ -1,4 +1,4 @@
 
-API_ID = 0
-API_HASH = ''
+API_IDS = []
+API_HASHES = ['', '']
 WORKDIR = "sessions/"
