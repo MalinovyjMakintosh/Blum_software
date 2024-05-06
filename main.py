@@ -88,7 +88,7 @@ async def get_tg_clients() -> list[Client]:
         name=session_name,
         api_id=api_id,
         api_hash=api_hash,
-        workdir="sessions/",
+        workdir='sessions/',
     ) for session_name, api_id, api_hash in zip(session_names, data.config.API_IDS, data.config.API_HASHES)]
 
     return tg_clients
