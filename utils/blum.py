@@ -130,7 +130,20 @@ class Start:
         resp = await http_client.post("https://gateway.blum.codes/v1/auth/provider/PROVIDER_TELEGRAM_MINI_APP", json=json_data)
         http_client.headers['Authorization'] = "Bearer " + (await resp.json()).get("token").get("access")
 
-
-
 async def run_claimer(tg_client: Client, proxy: str | None):
     await Start(tg_client=tg_client).main(proxy=proxy)
+
+async def run_claimer_multiple_accounts(proxy: str | None):
+    tasks = []
+    for api_id, api_hash in zip(config.API_IDS, config.API_HASHES):
+        tg_client = Client(
+            f"{config.WORKDIR}/session_{api_id}",
+            api_id=api_id,
+            api_hash=api_hash
+        )
+        tasks.append(run_claimer(tg_client, proxy))
+    
+    await asyncio.gather(*tasks)
+
+
+    await run_claimer_multiple_accounts(proxy)
