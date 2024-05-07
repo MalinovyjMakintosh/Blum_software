@@ -115,13 +115,13 @@ class Start:
     async def balance(self, http_client: aiohttp.ClientSession):
         resp = await http_client.get("https://game-domain.blum.codes/api/v1/user/balance")
         resp_json = await resp.json()
+
         timestamp = resp_json.get("timestamp")
         if resp_json.get("farming"):
             start_time = resp_json.get("farming").get("startTime")
             end_time = resp_json.get("farming").get("endTime")
 
             return int(timestamp/1000), int(start_time/1000), int(end_time/1000)
-    
         return int(timestamp/1000), None, None
 
     async def login(self, http_client: aiohttp.ClientSession, proxy: str | None):
