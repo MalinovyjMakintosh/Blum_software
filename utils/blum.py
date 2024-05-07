@@ -115,13 +115,13 @@ class Start:
     async def balance(self, http_client: aiohttp.ClientSession):
         resp = await http_client.get("https://game-domain.blum.codes/api/v1/user/balance")
         resp_json = await resp.json()
+
         timestamp = resp_json.get("timestamp")
         if resp_json.get("farming"):
             start_time = resp_json.get("farming").get("startTime")
             end_time = resp_json.get("farming").get("endTime")
 
             return int(timestamp/1000), int(start_time/1000), int(end_time/1000)
-    
         return int(timestamp/1000), None, None
 
     async def login(self, http_client: aiohttp.ClientSession, proxy: str | None):
@@ -130,7 +130,20 @@ class Start:
         resp = await http_client.post("https://gateway.blum.codes/v1/auth/provider/PROVIDER_TELEGRAM_MINI_APP", json=json_data)
         http_client.headers['Authorization'] = "Bearer " + (await resp.json()).get("token").get("access")
 
-
-
 async def run_claimer(tg_client: Client, proxy: str | None):
     await Start(tg_client=tg_client).main(proxy=proxy)
+
+async def run_claimer_multiple_accounts(proxy: str | None):
+    tasks = []
+    for api_id, api_hash in zip(config.API_IDS, config.API_HASHES):
+        tg_client = Client(
+            f"{config.WORKDIR}/session_{api_id}",
+            api_id=api_id,
+            api_hash=api_hash
+        )
+        tasks.append(run_claimer(tg_client, proxy))
+    
+    await asyncio.gather(*tasks)
+
+
+    await run_claimer_multiple_accounts(proxy)

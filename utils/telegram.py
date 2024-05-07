@@ -7,8 +7,8 @@ from utils.core import logger
 class Accounts:
     def __init__(self):
         self.workdir = config.WORKDIR
-        self.api_id = config.API_ID
-        self.api_hash = config.API_HASH
+        self.api_id = config.API_IDS
+        self.api_hash = config.API_HASHES
 
     def pars_sessions(self):
         sessions = []
