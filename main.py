@@ -70,9 +70,12 @@ def get_session_names() -> list[str]:
 
 
 def get_proxies() -> list[Proxy]:
-    with open(file='proxies.txt', encoding='utf-8-sig') as file:
-        proxies = [Proxy.from_str(proxy=row.strip()).as_url for row in file]
-    return proxies
+    if data.config.USE_PROXY:
+        with open(file='proxies.txt', encoding='utf-8-sig') as file:
+            proxies = [Proxy.from_str(proxy=row.strip()).as_url for row in file]
+        return proxies
+    else:
+        return []
 
 
 async def get_tg_clients() -> list[Client]:
