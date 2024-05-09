@@ -44,14 +44,17 @@ class Start:
 
     async def main(self, proxy: str | None):
         await self.tg_client.start()  # Начинаем сессию клиента перед использованием
-        proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
+        if config.USE_PROXY:
+            proxy_conn = ProxyConnector().from_url(proxy) if proxy else None
+        else:
+            proxy_conn = None
         async with aiohttp.ClientSession(headers=headers, connector=proxy_conn) as http_client:
-            if proxy:
+            if proxy and config.USE_PROXY:
                 await self.check_proxy(http_client=http_client, proxy=proxy)
 
             while True:
                 try:
-                    await asyncio.sleep(random.uniform(5, 12))
+                    await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 1 до 5 минут
                     await self.login(http_client=http_client, proxy=proxy)
 
                     while True:
@@ -59,12 +62,17 @@ class Start:
                             timestamp, start_time, end_time = await self.balance(http_client=http_client)
 
                             if start_time is None and end_time is None:
+                                await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 1 до 5 минут перед началом фарма
                                 await self.start(http_client=http_client)
                                 logger.info(f"Поток {self} | Начало фарма!")
 
                             elif start_time is not None and end_time is not None and timestamp >= end_time:
                                 timestamp, balance = await self.claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда! Баланс: {balance}")
+                                await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 1 до 5 минут минут перед клеймом награды
+
+                                timestamp, balance = await self.friend_claim(http_client=http_client)
+                                logger.success(f"Поток {self} | Получена награда за друзей! Баланс: {balance}")
 
                             else:
                                 logger.info(f"Поток {self} | Спим {end_time - timestamp} секунд!")
@@ -107,6 +115,19 @@ class Start:
         resp_json = await resp.json()
 
         return int(resp_json.get("timestamp")/1000), resp_json.get("availableBalance")
+    
+    async def friend_claim(self, http_client: aiohttp.ClientSession):
+        resp = await http_client.post("https://gateway.blum.codes/v1/friends/claim")
+        resp_json = await resp.json()
+
+        timestamp = resp_json.get("timestamp")
+        available_balance = resp_json.get("availableBalance")
+
+        if timestamp is not None and available_balance is not None:
+            return int(timestamp / 1000), available_balance
+        else:
+            logger.error("Ошибка при клейме награды за друзей: неверный формат данных")
+            return None, None
 
 
     async def start(self, http_client: aiohttp.ClientSession):
