@@ -54,7 +54,7 @@ class Start:
 
             while True:
                 try:
-                    await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 1 до 5 минут
+                    await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6 до 10 секунд
                     await self.login(http_client=http_client, proxy=proxy)
 
                     while True:
@@ -62,14 +62,14 @@ class Start:
                             timestamp, start_time, end_time = await self.balance(http_client=http_client)
 
                             if start_time is None and end_time is None:
-                                await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 1 до 5 минут перед началом фарма
+                                await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6 до 10 секунд перед началом фарма
                                 await self.start(http_client=http_client)
                                 logger.info(f"Поток {self} | Начало фарма!")
 
                             elif start_time is not None and end_time is not None and timestamp >= end_time:
                                 timestamp, balance = await self.claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда! Баланс: {balance}")
-                                await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 1 до 5 минут минут перед клеймом награды
+                                await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6 до 10 секунд перед клеймом награды
 
                                 timestamp, balance = await self.friend_claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда за друзей! Баланс: {balance}")
