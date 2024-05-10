@@ -1,13 +1,13 @@
 import random
-from utils.core import logger
-from pyrogram import Client
-from pyrogram.raw.functions.messages import RequestWebView
 import asyncio
 from urllib.parse import unquote
-from data import config
 import aiohttp
 from aiohttp_proxy import ProxyConnector
 from better_proxy import Proxy
+from pyrogram import Client
+from pyrogram.raw.functions.messages import RequestWebView
+from data import config
+from utils.core import logger
 from pyrogram.errors import Unauthorized, UserDeactivated, AuthKeyUnregistered
 from .headers import headers
 
@@ -69,7 +69,7 @@ class Start:
                             elif start_time is not None and end_time is not None and timestamp >= end_time:
                                 timestamp, balance = await self.claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда! Баланс: {balance}")
-                                await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6 до 10 секунд перед клеймом награды
+                                await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6 до 10 секундт перед клеймом награды
 
                                 timestamp, balance = await self.friend_claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда за друзей! Баланс: {balance}")
@@ -166,5 +166,5 @@ async def run_claimer_multiple_accounts(proxy: str | None):
     
     await asyncio.gather(*tasks)
 
-
+# Здесь вызываем функцию run_claimer_multiple_accounts только один раз
     await run_claimer_multiple_accounts(proxy)
