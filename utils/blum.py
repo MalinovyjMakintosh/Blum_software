@@ -69,7 +69,7 @@ class Start:
                             elif start_time is not None and end_time is not None and timestamp >= end_time:
                                 timestamp, balance = await self.claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда! Баланс: {balance}")
-                                await asyncio.sleep(random.uniform(60, 300))  # Случайная задержка от 6  до 10 секунд  перед клеймом награды
+                                await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6  до 10 секунд  перед клеймом награды
 
                                 timestamp, balance = await self.friend_claim(http_client=http_client)
                                 logger.success(f"Поток {self} | Получена награда за друзей! Баланс: {balance}")
