@@ -71,8 +71,6 @@ class Start:
                                 logger.success(f"Поток {self} | Получена награда! Баланс: {balance}")
                                 await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6  до 10 секунд  перед клеймом награды
 
-                                timestamp, balance = await self.friend_claim(http_client=http_client)
-                                logger.success(f"Поток {self} | Получена награда за друзей! Баланс: {balance}")
 
                             else:
                                 logger.info(f"Поток {self} | Спим {end_time - timestamp} секунд!")
@@ -113,10 +111,10 @@ class Start:
     async def claim(self, http_client: aiohttp.ClientSession):
         resp = await http_client.post("https://game-domain.blum.codes/api/v1/farming/claim")
         resp_json = await resp.json()
-
+        resp2 = await http_client.post("https://gateway.blum.codes/v1/friends/claim")
         return int(resp_json.get("timestamp")/1000), resp_json.get("availableBalance")
     
-    async def friend_claim(self, http_client: aiohttp.ClientSession):
+    #async def friend_claim(self, http_client: aiohttp.ClientSession):
         resp = await http_client.post("https://gateway.blum.codes/v1/friends/claim")
         resp_json = await resp.json()
 
@@ -127,7 +125,7 @@ class Start:
             return int(timestamp / 1000), available_balance
         else:
             logger.error("Ошибка при клейме награды за друзей: неверный формат данных")
-            return None, None
+            return int(timestamp/1000), None, None
 
 
     async def start(self, http_client: aiohttp.ClientSession):
