@@ -97,7 +97,9 @@ async def get_tg_clients() -> list[Client]:
     return tg_clients
 
 async def main():
-    await process()
+    while True:
+        await process()
+        await asyncio.sleep(1)  
 
 if __name__ == '__main__':
     asyncio.get_event_loop().run_until_complete(main())
