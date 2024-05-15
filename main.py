@@ -54,12 +54,14 @@ async def process() -> None:
 
 # Функция для выполнения задач
 async def run_tasks(tg_clients: list[Client]):
-    proxies = get_proxies()
-    proxies_cycle = cycle(proxies) if proxies else None
-    tasks = [asyncio.create_task(run_claimer(tg_client=tg_client, proxy=next(proxies_cycle) if proxies_cycle else None))
-             for tg_client in tg_clients]
+    while True:
+        proxies = get_proxies()
+        proxies_cycle = cycle(proxies) if proxies else None
+        tasks = [asyncio.create_task(run_claimer(tg_client=tg_client, proxy=next(proxies_cycle) if proxies_cycle else None))
+                 for tg_client in tg_clients]
 
-    await asyncio.gather(*tasks)
+        await asyncio.gather(*tasks)
+
 
 
 def get_session_names() -> list[str]:
