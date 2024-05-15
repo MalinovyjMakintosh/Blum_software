@@ -52,10 +52,12 @@ class Start:
             if proxy and config.USE_PROXY:
                 await self.check_proxy(http_client=http_client, proxy=proxy)
 
-                await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6  до 10 секунд
-                await self.login(http_client=http_client, proxy=proxy)
+            while True:
+                try:
+                    await asyncio.sleep(random.uniform(6, 10))  # Случайная задержка от 6  до 10 секунд
+                    await self.login(http_client=http_client, proxy=proxy)
 
-                while True:
+                    while True:
                         try:
                             timestamp, start_time, end_time = await self.balance(http_client=http_client)
 
@@ -77,7 +79,8 @@ class Start:
                             await asyncio.sleep(1)
                         except Exception as e:
                             logger.error(f"Поток {self} | Ошибка: {e}")
-
+                except Exception as e:
+                    logger.error(f"Ошибка: {e}")
 
     async def get_tg_web_data(self, proxy: str | None) -> str:
         if proxy:
@@ -108,7 +111,9 @@ class Start:
     async def claim(self, http_client: aiohttp.ClientSession):
         resp = await http_client.post("https://game-domain.blum.codes/api/v1/farming/claim")
         resp_json = await resp.json()
+        resp2 = await http_client.post("https://gateway.blum.codes/v1/friends/claim")
         return int(resp_json.get("timestamp")/1000), resp_json.get("availableBalance")
+
 
     async def start(self, http_client: aiohttp.ClientSession):
         resp = await http_client.post("https://game-domain.blum.codes/api/v1/farming/start")
