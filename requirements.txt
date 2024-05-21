@@ -4,3 +4,4 @@ loguru==0.7.2
 aiohttp==3.9.5
 fake-useragent==1.5.1
 better_proxy==1.1.5
+aiohttp_proxy==0.1.2
