@@ -6,6 +6,7 @@ import asyncio
 from urllib.parse import unquote
 from data import config
 import aiohttp
+from fake_useragent import UserAgent
 from aiohttp_proxy import ProxyConnector
 from better_proxy import Proxy
 from pyrogram.errors import Unauthorized, UserDeactivated, AuthKeyUnregistered
